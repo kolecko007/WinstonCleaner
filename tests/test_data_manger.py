@@ -4,7 +4,7 @@ import unittest
 ROOT_PATH = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 sys.path.append(ROOT_PATH)
 
-class InputManagerTest(unittest.TestCase):
+class DataManagerTest(unittest.TestCase):
     def setUp(self):
         print 'up'
         pass
