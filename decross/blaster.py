@@ -1,7 +1,8 @@
 import os, glob, re, itertools, subprocess
 
 from path_resolver import PathResolver
-from input_manager import InputManager
+from data_manager import DataManager
+from settings import Settings
 
 class Blaster:
     COLUMNS = 'qseqid sseqid pident length qlen gaps slen qstart qend qcovs qcovhsp'
@@ -29,7 +30,7 @@ class Blaster:
 
     def _contigs_files(self):
         files = glob.glob(PathResolver.datasets_output_path() + '/*')
-        return [e for e in files if re.match(InputManager.DATASET_REGEXP, e)]
+        return [e for e in files if re.match(DataManager.CONTIGS_FNAME_REGEXP, e)]
 
     def _make_databases(self):
         for f_path in self._contigs_files():
@@ -48,7 +49,7 @@ class Blaster:
             self._perform_blast(left, right)
 
     def _perform_blast(self, left_path, right_path):
-        command = 'blastn -query %s -db %s -out %s -outfmt "6 %s" -num_threads 30'
+        command = 'blastn -query %s -db %s -out %s -outfmt "6 %s" -num_threads %s'
 
         right_org_name = os.path.splitext(os.path.basename(right_path))[0]
         left_org_name = os.path.splitext(os.path.basename(left_path))[0]
@@ -57,7 +58,10 @@ class Blaster:
         outfile_name = '%s_vs_%s.%s' % (left_org_name, right_org_name, self.BLAST_RESULT_EXT)
         output_path = PathResolver.output_path_for(PathResolver.ALL_VS_ALL_FOLDER, outfile_name)
 
-        subprocess.call(command % (left_path, db_path, output_path, self.COLUMNS), shell=True)
+        threads_cnt = Settings.decross.blast.threads
+        command = command % (left_path, db_path, output_path, self.COLUMNS, threads_cnt)
+
+        subprocess.call(command, shell=True)
 
     def _make_one_vs_all_files(self):
         all_vs_all_path = PathResolver.output_path_for(PathResolver.ALL_VS_ALL_FOLDER)
@@ -71,9 +75,13 @@ class Blaster:
             files[left_org_id].append(f_path)
 
         for org_id, files in files.iteritems():
+            org_file_name = org_id + '.' + self.BLAST_RESULT_EXT
+            path = PathResolver.output_path_for(PathResolver.ONE_VS_ALL_FOLDER, org_file_name)
+
+            if os.path.exists(path):
+                os.remove(path)
+
             for f_path in files:
-                org_file_name = org_id + '.' + self.BLAST_RESULT_EXT
-                path = PathResolver.output_path_for(PathResolver.ONE_VS_ALL_FOLDER, org_file_name)
                 subprocess.call('cat %s >> %s' % (f_path, path), shell=True)
 
     def _db_folder_path(self, *inner_path):

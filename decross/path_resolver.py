@@ -13,6 +13,9 @@ class PathResolver:
     BLAST_RESULTS_FOLDER = 'blast_results'
     ALL_VS_ALL_FOLDER = os.path.join(BLAST_RESULTS_FOLDER, 'all_vs_all')
     ONE_VS_ALL_FOLDER = os.path.join(BLAST_RESULTS_FOLDER, 'one_vs_all')
+    HITSOGRAMS_FOLDER = 'histograms'
+    TYPES_FILENAME = 'types.csv'
+    RESULTS_FOLDER = 'results'
 
     @staticmethod
     def abs_path_for(path):
@@ -43,6 +46,15 @@ class PathResolver:
             return os.path.join(folder, file)
         else:
             return folder
+
+    @staticmethod
+    def pair_types_path():
+        return PathResolver.output_path_for(PathResolver.TYPES_FILENAME)
+
+
+    @staticmethod
+    def results_path_for(*paths):
+        return PathResolver.output_path_for(PathResolver.RESULTS_FOLDER, *paths)
 
     @staticmethod
     def assure_path_exists(path):

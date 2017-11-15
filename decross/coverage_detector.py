@@ -1,5 +1,3 @@
-#!/usr/bin/python2.7
-
 import sys, os
 import pickle, sqlite3
 from tqdm import tqdm
@@ -69,7 +67,7 @@ class CoverageDetector:
                 if line.startswith('#'):
                     continue
                 splitted = line.split('\t')
-                items[splitted[0]] = [float(splitted[5])]
+                items[splitted[0].split(' ')[0]] = [float(splitted[5])]
 
         self.load_from_hash(items)
 

@@ -5,14 +5,16 @@ from settings import Settings
 from name_converter import NameConverter
 from path_resolver import PathResolver
 
-class InputManager:
-    READS_RGEXP = '^(.+?)_%s\.(fq|fastq)$'
-    DATASET_REGEXP = '^(.+?)\.(fa|fas|fasta)$'
+class DataManager:
+    READS_EXT = ['fq', 'fastq']
+    READS_FNAME_REGEXP = '^(.+?)_%s\.(' + '|'.join(READS_EXT) + ')$'
+
+    CONTIGS_EXT = ['fa', 'fas', 'fasta']
+    CONTIGS_FNAME_REGEXP = '^(.+?)\.(' + '|'.join(CONTIGS_EXT) + ')$'
 
     def __init__(self):
         self.datasets = []
         self._make_datasets()
-
 
     def _make_datasets(self):
         NameConverter.load()
@@ -32,11 +34,11 @@ class InputManager:
             file_group = { 'reads_1': None, 'reads_2': None, 'contigs': None }
 
             for f in files:
-                if re.match(self.READS_RGEXP%1, f):
+                if re.match(self.READS_FNAME_REGEXP%1, f):
                     file_group['reads_1'] = f
-                elif re.match(self.READS_RGEXP%2, f):
+                elif re.match(self.READS_FNAME_REGEXP%2, f):
                     file_group['reads_2'] = f
-                elif re.match(self.DATASET_REGEXP, f):
+                elif re.match(self.CONTIGS_FNAME_REGEXP, f):
                     file_group['contigs'] = f
 
             if not None in file_group.values():
@@ -59,17 +61,11 @@ class Dataset:
     """ Logic of input files for the organism
     """
 
-    def __init__(self, reads_1, reads_2, contigs):
-        if not reads_1 or not reads_2 or not contigs:
-            raise Exception('Not enough data for dataset instance')
-
+    def __init__(self, external_name):
         if not os.path.isdir(PathResolver.datasets_output_path()):
             os.makedirs(PathResolver.datasets_output_path())
 
-        self.reads_1 = reads_1
-        self.reads_2 = reads_2
-        self.contigs = contigs
-
+        self.external_name = external_name
         NameConverter.register(self.external_org_id())
 
     def prepare(self):
@@ -87,7 +83,7 @@ class Dataset:
         return [PathResolver.input_path_for(f) for f in [self.reads_1, self.reads_2]]
 
     def external_org_id(self):
-        return re.search(InputManager.DATASET_REGEXP, self.contigs).group(1)
+        return re.search(DataManager.CONTIGS_FNAME_REGEXP, self.contigs).group(1)
 
     def internal_org_id(self):
         return NameConverter.ext_to_int(self.external_org_id())
@@ -110,3 +106,14 @@ class Dataset:
 
     def _get_output_file_name(self, input_file_name):
         return input_file_name.replace(self.external_org_id(), self.internal_org_id())
+
+    def _find_file(self, path, external_name, extensions):
+        path = os.path.join(path, '')
+        paths = [glob.glob('%s%s.%s' % (path, external_name, ext)) for ext in extensions]
+        paths = sum(paths, [])
+        if len(path) > 0:
+            return paths[0]
+        else:
+            return None
+
+
