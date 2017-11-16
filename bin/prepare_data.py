@@ -31,14 +31,14 @@ def analyze_blastab(file_path):
 
     blastab = OneVsOne(file_path)
     threshold = blastab.detect_threshold()
-    left_name = blastab.left_org_outer_name()
-    right_name = blastab.right_org_outer_name()
+    left_name = blastab.left_org_external_name()
+    right_name = blastab.right_org_external_name()
     t = blastab.detect_type()
     data = [left_name, right_name, str(threshold), t]
 
-    with oufile_lock:
+    with outfile_lock:
         with open(PathResolver.pair_types_path(), 'a') as output:
-          output.write(",".join(data) + "\n")
+            output.write(",".join(data) + "\n")
 
     hits_filename = "%s_vs_%s.png" % (left_name, right_name)
     hist_path = PathResolver.output_path_for(PathResolver.HITSOGRAMS_FOLDER, hits_filename)
@@ -52,14 +52,13 @@ def main():
     Settings.load(options.config_path or PathResolver.abs_path_for(SETTINGS_PATH))
     NameConverter.load()
 
-    output_path = Settings.decross.paths.output
-    PathResolver.assure_path_exists(output_path)
+    PathResolver.assure_path_exists(PathResolver.output_path())
 
     if not options.type_detection_only:
         data_manager = DataManager()
 
         for i, dataset in enumerate(data_manager.datasets):
-            logger.info('Working with dataset %s...' % dataset.external_org_id())
+            logger.info('Working with dataset %s...' % dataset.external_name)
             dataset.prepare()
             mapper = Mapper(dataset)
             mapper.perform()
@@ -83,8 +82,8 @@ def main():
     paths = [fname for fname in glob.glob(all_vs_all_path + '/*.blastab')]
     paths.sort()
 
-    global oufile_lock
-    oufile_lock = Lock()
+    global outfile_lock
+    outfile_lock = Lock()
 
     if Settings.decross.threads.multithreading:
         pool = Pool(int(Settings.decross.threads.count))

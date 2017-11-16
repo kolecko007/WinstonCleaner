@@ -19,7 +19,7 @@ class DataManager:
     def _make_datasets(self):
         NameConverter.load()
 
-        input_path = str(Path(Settings.decross.paths.input))
+        input_path = PathResolver.input_path()
         files = [n.split('/')[-1] for n in glob.glob(input_path + '/*')]
         files.sort()
 
@@ -41,10 +41,11 @@ class DataManager:
                 elif re.match(self.CONTIGS_FNAME_REGEXP, f):
                     file_group['contigs'] = f
 
+
             if not None in file_group.values():
-                dataset = Dataset(file_group['reads_1'],
-                                  file_group['reads_2'],
-                                  file_group['contigs'])
+                ext_name = self._extract_external_name(file_group['contigs'])
+                dataset = Dataset(ext_name)
+
                 self.datasets.append(dataset)
 
         return self.datasets
@@ -66,52 +67,71 @@ class Dataset:
             os.makedirs(PathResolver.datasets_output_path())
 
         self.external_name = external_name
-        NameConverter.register(self.external_org_id())
+        self.internal_name = self.detect_internal_name()
+        NameConverter.register(self.external_name)
+
+        self._contigs_count = None
 
     def prepare(self):
         self._copy_contigs_to_output()
         self._rename_contigs_titles()
 
-    def contigs_input_path(self):
-        os.path.join(Settings.decross.paths.input, self.contigs)
+    # Input paths
 
-    def contigs_output_path(self):
-        contigs_file_name = self._get_output_file_name(self.contigs)
-        return PathResolver.datasets_output_path(contigs_file_name)
+    def contigs_input_path(self):
+        ext = DataManager.CONTIGS_EXT
+        return self._find_dataset_file(self.external_name, ext)
 
     def reads_input_paths(self):
-        return [PathResolver.input_path_for(f) for f in [self.reads_1, self.reads_2]]
+        file_names = ["%s_%s" % (self.external_name, i) for i in [1, 2]]
+        ext = DataManager.READS_EXT
+        return [self._find_dataset_file(fn, ext) for fn in file_names]
 
-    def external_org_id(self):
-        return re.search(DataManager.CONTIGS_FNAME_REGEXP, self.contigs).group(1)
+    # Output paths
 
-    def internal_org_id(self):
-        return NameConverter.ext_to_int(self.external_org_id())
+    def contigs_output_path(self):
+        file_name = os.path.basename(self.contigs_input_path())
+        return PathResolver.datasets_output_path(file_name)
+
+    def reads_output_paths(self):
+        input_names = [os.path.basename(p) for p in self.reads_input_paths()]
+        return [PathResolver.datasets_output_path(p) for p in input_names]
+
+    def detect_internal_name(self):
+        return NameConverter.ext_to_int(self.external_name)
+
+    def contigs_count(self):
+        if not self._contigs_count:
+            path = self.contigs_input_path()
+            cnt = subprocess.check_output('grep -c ">" %s' % path, shell=True)
+            self._contigs_count = int(cnt)
+
+        return self._contigs_count
 
     def _copy_contigs_to_output(self):
-        old_path = PathResolver.input_path_for(self.contigs)
-
-        new_f_name = self._get_output_file_name(self.contigs)
-        new_path = PathResolver.datasets_output_path(new_f_name)
+        old_path = self.contigs_input_path()
+        new_path = self.contigs_output_path()
 
         subprocess.call('cp %s %s' % (old_path, new_path), shell=True)
 
     def _rename_contigs_titles(self):
-        out_file_name = self._get_output_file_name(self.contigs)
-        out_file_path = PathResolver.datasets_output_path(out_file_name)
+        out_file_path = self.contigs_output_path()
+        system_id = self.internal_name
 
-        system_id = self.internal_org_id()
-        command = 'sed -i "s#^>\(.*\)\$#>%s_\\1#" %s' % (system_id, out_file_path)
+        command = 'sed -i "s#^>\(.*\)\$#>%s_\\1#" %s'
+        command = command % (system_id, out_file_path)
         subprocess.call(command, shell=True)
 
-    def _get_output_file_name(self, input_file_name):
-        return input_file_name.replace(self.external_org_id(), self.internal_org_id())
+    def _get_output_path(self, input_path):
+        file_name = os.path.basename(input_path)
+        file_name = input_file_name.replace(file_name, self.internal_name)
+        return PathResolver.datasets_output_path(file_name)
 
-    def _find_file(self, path, external_name, extensions):
-        path = os.path.join(path, '')
-        paths = [glob.glob('%s%s.%s' % (path, external_name, ext)) for ext in extensions]
+    def _find_dataset_file(self, file_name, extensions):
+        path = PathResolver.input_path()
+        paths = [glob.glob('%s/%s.%s' % (path, file_name, ext)) for ext in extensions]
         paths = sum(paths, [])
-        if len(path) > 0:
+        if len(paths) > 0:
             return paths[0]
         else:
             return None

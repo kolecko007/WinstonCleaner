@@ -11,6 +11,7 @@ from seq_id import SeqId
 from coverage_detector import CoverageDetector
 from name_converter import NameConverter
 from settings import Settings
+from data_manager import Dataset
 
 class ContaminationsFinder:
     """
@@ -32,9 +33,10 @@ class ContaminationsFinder:
     def __init__(self, file_path):
         self.file_path = file_path
         self.logs = { name: None for name in self.FILES }
-        self.int_org_id = os.path.splitext(os.path.basename(file_path))[0]
-        self.ext_org_id = NameConverter.int_to_ext(self.int_org_id)
+        self.external_name = os.path.splitext(os.path.basename(file_path))[0]
+        self.internal_name = NameConverter.ext_to_int(self.external_name)
         self.blastab = OneVsAll(file_path)
+        self.dataset = Dataset(self.external_name)
 
         self.seq_dict = self._make_seq_dict()
         self.contaminations = []
@@ -108,7 +110,7 @@ class ContaminationsFinder:
 
     def _open_logs(self):
         for name, ext in self.FILES.iteritems():
-            f_name = '%s_%s.%s' % (self.ext_org_id, name, ext)
+            f_name = '%s_%s.%s' % (self.external_name, name, ext)
             self.logs[name] = open(PathResolver.results_path_for(f_name), 'w')
 
     def _close_logs(self):
@@ -127,13 +129,7 @@ class ContaminationsFinder:
         return d
 
     def _dataset_path(self):
-        org_int_name = os.path.splitext(os.path.basename(self.file_path))[0]
-        paths = glob.glob("%s/%s*" % (PathResolver.datasets_output_path(), org_int_name))
-
-        if len(paths) == 0:
-            raise RuntimeError("Cannot detect dataset for %s" % org_int_name)
-
-        return paths[0]
+        return self.dataset.contigs_output_path()
 
     def _detect_kmer(self, contig_id, default_value):
         coverage = self.coverage_detector.kmer_by_contig_id(contig_id)
@@ -149,7 +145,7 @@ class ContaminationsFinder:
             return True
 
         in_path = self._dataset_path()
-        out_path = PathResolver.results_path_for("%s_clean.fasta" % self.ext_org_id)
+        out_path = PathResolver.results_path_for("%s_clean.fasta" % self.external_name)
         contaminated_ids = [s.query_seq_id.seqid for s in self.contaminations]
 
         with open(out_path, 'w') as out_f:

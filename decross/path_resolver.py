@@ -22,30 +22,20 @@ class PathResolver:
         return os.path.join(str(PathResolver.base_path), str(Path(path)))
 
     @staticmethod
-    def input_path_for(path):
-        return os.path.join(Settings.decross.paths.input, path)
+    def input_path_for(*paths):
+        return os.path.join(PathResolver.input_path(), *paths)
 
     @staticmethod
-    def output_path_for(path, *extra_paths):
-        return os.path.join(Settings.decross.paths.output, path, *extra_paths)
+    def output_path_for(*paths):
+        return os.path.join(PathResolver.output_path(), *paths)
 
     @staticmethod
-    def datasets_output_path(file=None):
-        folder = PathResolver.output_path_for(PathResolver.DATASETS_FOLDER)
-
-        if file:
-            return os.path.join(folder, file)
-        else:
-            return folder
+    def datasets_output_path(*paths):
+        return PathResolver.output_path_for(PathResolver.DATASETS_FOLDER, *paths)
 
     @staticmethod
-    def mappings_output_path(file=None):
-        folder = PathResolver.output_path_for(PathResolver.MAPPINGS_FOLDER)
-
-        if file:
-            return os.path.join(folder, file)
-        else:
-            return folder
+    def mappings_output_path(*paths):
+        return PathResolver.output_path_for(PathResolver.MAPPINGS_FOLDER, *paths)
 
     @staticmethod
     def pair_types_path():
@@ -60,6 +50,14 @@ class PathResolver:
     def assure_path_exists(path):
         if not os.path.isdir(path):
             os.makedirs(path)
+
+    @staticmethod
+    def input_path():
+        return Settings.decross.paths.input.rstrip('/')
+
+    @staticmethod
+    def output_path():
+        return Settings.decross.paths.output.rstrip('/')
 
 
 

@@ -5,6 +5,7 @@ from ..path_resolver import PathResolver
 from ..name_converter import NameConverter
 from ..blast_hit import BlastHit
 from ..blast_histogram import BlastHistogram
+from ..data_manager import Dataset
 from blastab import Blastab
 
 class OneVsOne(Blastab):
@@ -28,8 +29,8 @@ class OneVsOne(Blastab):
         self.threshold = None
         self.type = None
 
-        self._left_dataset_count = None
-        self._right_dataset_count = None
+        self.left_dataset = Dataset(self.left_org_external_name())
+        self.right_dataset = Dataset(self.right_org_external_name())
 
     def detect_threshold(self):
         if self.threshold:
@@ -54,8 +55,8 @@ class OneVsOne(Blastab):
         return self.type
 
     def plot(self, output_path, show=False):
-        left_name = self.left_org_outer_name()
-        right_name = self.right_org_outer_name()
+        left_name = self.left_org_external_name()
+        right_name = self.right_org_external_name()
 
         title = left_name + " vs " + right_name + " (threshold: " + str(self.threshold) + ", " + str(len(self.histogram.hits)) + " hits)"
 
@@ -73,34 +74,20 @@ class OneVsOne(Blastab):
 
         plt.close()
 
-    def left_org_system_name(self):
-        return self.orgs_system_names()[0]
+    def left_org_external_name(self):
+        return self.org_external_names()[0]
 
-    def right_org_system_name(self):
-        return self.orgs_system_names()[1]
+    def right_org_external_name(self):
+        return self.org_external_names()[1]
 
-    def orgs_system_names(self):
+    def org_external_names(self):
         return os.path.splitext(os.path.basename(self.file_path))[0].split('_vs_')
 
-    def left_org_outer_name(self):
-        return NameConverter.int_to_ext(self.left_org_system_name())
-
-    def right_org_outer_name(self):
-        return NameConverter.int_to_ext(self.right_org_system_name())
-
     def left_dataset_count(self):
-        if not self._left_dataset_count:
-            self._left_dataset_count = self.dataset_count(self.left_org_system_name())
-        return self._left_dataset_count
+        return self.left_dataset.contigs_count()
 
     def right_dataset_count(self):
-        if not self._right_dataset_count:
-            self._right_dataset_count = self.dataset_count(self.right_org_system_name())
-        return self._right_dataset_count
-
-    def dataset_count(self, dataset_name):
-        path = "%s/%s.fasta" % (self.dataset_dir, dataset_name)
-        return int(subprocess.check_output('grep -c ">" %s' % path, shell=True))
+        return self.right_dataset.contigs_count()
 
     def merge_hits(self):
         ''' Keeps only best hits '''
@@ -146,7 +133,7 @@ class OneVsOne(Blastab):
         return self.detect_type() == self.TYPES[3]
 
     def is_absolutely_identical():
-        return self.left_org_outer_name() == self.right_org_outer_name()
+        return self.left_org_external_name() == self.right_org_external_name()
 
     def is_possibly_identical(self):
         left = sum(self.histogram.histogram[:-5])
@@ -159,7 +146,9 @@ class OneVsOne(Blastab):
             percentage = 1.0
 
         identical_by_histogram = percentage <= self.IDENTICAL_SPECIES_PERCENTAGE/100.0
-        enough_hits = len(self.hits) >= self.left_dataset_count()*(self.IDENTICAL_HITS_THRESHOLD/100.0)
+
+        contigs_count = self.left_dataset_count()
+        enough_hits = len(self.hits) >= contigs_count*(self.IDENTICAL_HITS_THRESHOLD/100.0)
 
         return identical_by_histogram and enough_hits
 

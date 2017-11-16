@@ -1,6 +1,7 @@
 import os, random
 
 from settings import Settings
+from path_resolver import PathResolver
 
 class NameConverter:
     DICT_FILENAME = 'system_names.csv'
@@ -55,4 +56,4 @@ class NameConverter:
 
     @staticmethod
     def _dict_file_path():
-        return os.path.join(Settings.decross.paths.output, NameConverter.DICT_FILENAME)
+        return PathResolver.output_path_for(NameConverter.DICT_FILENAME)

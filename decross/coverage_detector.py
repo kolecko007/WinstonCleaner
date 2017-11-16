@@ -2,7 +2,7 @@ import sys, os
 import pickle, sqlite3
 from tqdm import tqdm
 
-from decross.settings import Settings
+from path_resolver import PathResolver
 
 class DatabaseWorker:
     DEFAULT_DB_FILE_NAME = 'database.db'
@@ -25,7 +25,7 @@ class DatabaseWorker:
         self.connection.commit()
 
     def _default_db_path(self):
-        return os.path.join(Settings.decross.paths.output, self.DEFAULT_DB_FILE_NAME)
+        return PathResolver.output_path_for(self.DEFAULT_DB_FILE_NAME)
 
 class CoverageDetector:
     TABLE_NAME = 'coverage_entries'

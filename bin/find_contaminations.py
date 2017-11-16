@@ -36,7 +36,7 @@ def main():
     TypesManager.load()
 
     one_vs_all_path = PathResolver.output_path_for(PathResolver.ONE_VS_ALL_FOLDER)
-    paths = [fname for fname in glob.glob(one_vs_all_path + '/*.blastab')]
+    paths = glob.glob(one_vs_all_path + '/*.blastab')
     paths.sort()
 
     files_count = len(paths)
