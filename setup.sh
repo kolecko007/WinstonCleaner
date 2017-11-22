@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ "$1" == "--local" ]; then
-  pip install --user -r requirements.txt
+  pip2 install --user -r requirements.txt
 else
-  pip install -r requirements.txt
+  pip2 install -r requirements.txt
 fi
 
 if [ ! -f config/settings.yml ]; then

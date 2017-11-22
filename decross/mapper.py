@@ -5,13 +5,16 @@ from path_resolver import PathResolver
 
 class Mapper:
     MAPPINGS_FOLDER = 'coverage'
+    DB_FOLDER = 'db'
 
     def __init__(self, dataset):
         self.dataset = dataset
 
         folder_path = PathResolver.output_path_for(self.MAPPINGS_FOLDER)
-        if not os.path.isdir(folder_path):
-            os.makedirs(folder_path)
+        PathResolver.assure_path_exists(folder_path)
+
+        db_path = PathResolver.output_path_for(self.MAPPINGS_FOLDER, self.DB_FOLDER)
+        PathResolver.assure_path_exists(db_path)
 
     def perform(self):
         self._map()
@@ -19,23 +22,41 @@ class Mapper:
 
     def sam_file_path(self):
         file_name = '%s.sam' % self.dataset.external_name
-        return self._mappings_folder_path(file_name)
+        paths = [self.MAPPINGS_FOLDER, file_name]
+        return PathResolver.output_path_for(*paths)
 
     def pileup_output_path(self):
         file_name = '%s_pileup.txt' % self.dataset.external_name
-        return self._mappings_folder_path(file_name)
+        return PathResolver.output_path_for(self.MAPPINGS_FOLDER, file_name)
+
+    def db_path(self):
+        return PathResolver.output_path_for(self.MAPPINGS_FOLDER, self.DB_FOLDER)
 
     def _map(self):
         try:
-            exe = Settings.decross.paths.tools.bbmap_sh
+            bt_exe = Settings.decross.paths.tools.bowtie2
         except AttributeError:
-            exe = 'bbmap.sh'
+            bt_exe = 'bowtie2'
 
-        command = exe + ' in=%s in2=%s ref=%s nodisk out=%s'
+        try:
+            build_exe = Settings.decross.paths.tools.bowtie2_build
+        except AttributeError:
+            build_exe = 'bowtie2-build'
+
         in_1, in_2 = self.dataset.reads_input_paths()
-        ref = self.dataset.contigs_output_path()
-        out = self.sam_file_path()
-        subprocess.call(command % (in_1, in_2, ref, out), shell=True)
+        ref_path = self.dataset.contigs_output_path()
+        db_path = self.db_path()
+        out_path = self.sam_file_path()
+
+        command = build_exe + ' %s %s'
+        command = command % (ref_path, db_path)
+        print command
+        subprocess.call(command, shell=True)
+
+        command = bt_exe + ' --very-sensitive -p 32 -x %s -1 %s -2 %s -S %s'
+        command = command % (db_path, in_1, in_2, out_path)
+        print command
+        subprocess.call(command, shell=True)
 
     def _pileup(self):
         try:
@@ -48,6 +69,3 @@ class Mapper:
         ref = self.dataset.contigs_output_path()
         rpkm = self.pileup_output_path()
         subprocess.call(command % (sam_path, ref, rpkm), shell=True)
-
-    def _mappings_folder_path(self, file_name):
-        return PathResolver.output_path_for(self.MAPPINGS_FOLDER, file_name)
