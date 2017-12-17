@@ -1,4 +1,7 @@
 *.pyc
 *.yml
-
 *.idea
+
+test/simulation/data/*
+test/simulation/data/*/
+!test/simulation/data/datasets/

@@ -1,0 +1,21 @@
+decross:
+  paths:
+    input: %data_folder%
+    output: %output_folder%
+
+  hits_filtering:
+    len_ratio: 70
+    len_minimum: 100
+
+  coverage_ratio:
+    regular: 1.1
+    close: 0.04
+    left_eats_right: 10
+    right_eats_left: 0.1
+
+  threads:
+    multithreading:  false
+    threads_count:   1
+
+  blast:
+    threads: 30
