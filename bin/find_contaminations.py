@@ -3,6 +3,7 @@ import sys, os, time, logging, glob
 from pathlib import Path
 from multiprocessing import Pool
 from optparse import OptionParser
+from tqdm import tqdm
 
 ROOT_PATH = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 sys.path.append(ROOT_PATH)

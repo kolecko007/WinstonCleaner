@@ -17,10 +17,9 @@ class TypesManager:
             result = {}
 
             for row in csv.reader(f):
-                if row[0] not in result:
-                    result[row[0]] = {}
+                key = TypesManager.detect_key(row[0], row[1])
 
-                result[row[0]][row[1]] = {
+                result[key] = {
                     'threshold': float(row[2]),
                     'type': row[3]
                     }
@@ -28,6 +27,10 @@ class TypesManager:
         TypesManager.types_dict = result
 
         return True
+
+    @staticmethod
+    def detect_key(left, right):
+        return sorted([left, right])
 
     @staticmethod
     def get_threshold(left, right):
@@ -39,10 +42,9 @@ class TypesManager:
 
     @staticmethod
     def get_type_attr(left, right, attr):
-        try:
-            return TypesManager.types_dict[left][right][attr]
-        except KeyError:
+        if not TypesManager.types_dict:
             return None
+        return TypesManager.types_dict[TypesManager.detect_key(left, right)][attr]
 
     @staticmethod
     def pair_types_path():

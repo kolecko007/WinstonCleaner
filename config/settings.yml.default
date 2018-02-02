@@ -15,4 +15,4 @@ decross:
 
   threads:
     multithreading:  false
-    threads_count:   1
+    count:   1

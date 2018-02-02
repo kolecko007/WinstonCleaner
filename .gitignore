@@ -1,6 +1,7 @@
 *.pyc
 *.yml
 *.idea
+*.pbs
 
 test/simulation/data/*
 test/simulation/data/*/
