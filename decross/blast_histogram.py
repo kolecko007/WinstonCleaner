@@ -59,7 +59,7 @@ class BlastHistogram():
     def __init__(self, blastab):
         self.blastab = blastab
         self.hits = self.blastab.hits
-        self.values = [getattr(hit, self.DEFAULT_HIT_ATTR) for hit in self.hits]
+        self.values = np.array([getattr(hit, self.DEFAULT_HIT_ATTR) for hit in self.hits])
 
         rng = (self.RANGE_MIN, self.RANGE_MAX)
         self.histogram, self.bins = np.histogram(self.values, self.HIST_BINS_COUNT, range=rng)
@@ -130,9 +130,6 @@ class BlastHistogram():
 
         left_count = self.blastab.left_dataset_count()
         right_count = self.blastab.right_dataset_count()
-
-        # if self.is_possibly_identical():
-        #   ax.set_xlabel("%s vs %s" % (left_count, right_count))
 
         for idx, val in enumerate(self.histogram):
             x = self.x_coord_by_index(idx)

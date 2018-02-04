@@ -16,3 +16,13 @@ decross:
   threads:
     multithreading:  false
     count:   1
+
+  tools:
+    blast:
+      threads: 8
+    bowtie:
+      threads: 8
+
+#   pileup_sh: pileup.sh
+#   bowtie2: bowtie2
+#   bowtie2_build: bowtie2_build

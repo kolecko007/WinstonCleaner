@@ -53,8 +53,9 @@ class Mapper:
         print command
         subprocess.call(command, shell=True)
 
-        command = bt_exe + ' --very-sensitive -p 32 -x %s -1 %s -2 %s -S %s'
-        command = command % (db_path, in_1, in_2, out_path)
+        threads_cnt = Settings.decross.tools.bowtie2.threads
+        command = bt_exe + ' --very-sensitive -p %s -x %s -1 %s -2 %s -S %s'
+        command = command % (threads_cnt, db_path, in_1, in_2, out_path)
         print command
         subprocess.call(command, shell=True)
 

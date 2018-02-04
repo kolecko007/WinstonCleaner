@@ -6,3 +6,4 @@
 test/simulation/data/*
 test/simulation/data/*/
 !test/simulation/data/datasets/
+test/integration/output/*

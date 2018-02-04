@@ -30,7 +30,7 @@ class TypesManager:
 
     @staticmethod
     def detect_key(left, right):
-        return sorted([left, right])
+        return ','.join(sorted([left, right]))
 
     @staticmethod
     def get_threshold(left, right):
