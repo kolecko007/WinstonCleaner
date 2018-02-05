@@ -1,7 +1,7 @@
 decross:
   paths:
-    input: /Users/serafim/bio/martin/decross_final/test/integration/input
-    output: /Users/serafim/bio/martin/decross_final/test/integration/output
+    input: test/integration/input
+    output: test/integration/output
 
   hits_filtering:
     len_ratio: 70
