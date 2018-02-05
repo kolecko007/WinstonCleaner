@@ -1,0 +1,28 @@
+decross:
+  paths:
+    input: /Users/serafim/bio/martin/decross_final/test/integration/input
+    output: /Users/serafim/bio/martin/decross_final/test/integration/output
+
+  hits_filtering:
+    len_ratio: 70
+    len_minimum: 100
+
+  coverage_ratio:
+    regular: 1.5
+    close: 0.04
+    left_eats_right: 10
+    right_eats_left: 0.1
+
+  threads:
+    multithreading:  false
+    count: 1
+
+  tools:
+    blast:
+      threads: 8
+    bowtie2:
+      threads: 8
+
+    # pileup_sh: pileup.sh
+    # bowtie2: bowtie2
+    # bowtie2_build: bowtie2_build

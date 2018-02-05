@@ -1,5 +1,5 @@
 #!/usr/bin/python2.7
-import sys, os, progressbar, logging, glob
+import sys, os, logging, glob
 from pathlib import Path
 from multiprocessing import Pool, Lock
 from optparse import OptionParser
