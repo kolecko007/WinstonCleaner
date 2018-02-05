@@ -1,5 +1,4 @@
 import os, subprocess
-import matplotlib.pyplot as plt
 
 from ..path_resolver import PathResolver
 from ..name_converter import NameConverter
@@ -55,6 +54,8 @@ class OneVsOne(Blastab):
         return self.type
 
     def plot(self, output_path, show=False):
+        import matplotlib.pyplot as plt
+
         left_name = self.left_org_external_name()
         right_name = self.right_org_external_name()
 

@@ -12,6 +12,8 @@ class DatabaseWorker:
         if not db_path:
             db_path = self._default_db_path()
 
+        self.db_path = db_path
+
         if not os.path.exists(db_path):
             open(db_path, 'w').close()
 
@@ -34,6 +36,12 @@ class CoverageDetector:
         self.db_loader = DatabaseWorker(db_path=db_path)
 
     def create_table(self):
+        db_path = self.db_loader.db_path
+
+        if os.path.exists(db_path):
+            os.remove(db_path)
+            self.db_loader = DatabaseWorker(db_path=db_path)
+
         self.db_loader.execute("""
             create table if not exists `%s` (
             `contig_id` char[256] NOT NULL,
