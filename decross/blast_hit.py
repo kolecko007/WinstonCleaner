@@ -27,6 +27,9 @@ class BlastHit():
     def is_reliable(self):
         return self.qcovhsp >= self.LEN_RATIO and self.calculate_qlen() >= self.LEN_MINIMUM
 
+    def equal_organisms(self):
+        return self.query_seq_id.is_equal_to(self.subject_seq_id)
+
     @staticmethod
     def generate(file_path):
         return [BlastHit(raw_hit) for raw_hit in open(file_path).readlines()]

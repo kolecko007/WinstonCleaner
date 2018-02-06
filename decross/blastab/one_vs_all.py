@@ -40,7 +40,7 @@ class OneVsAll(Blastab):
 
         for hit in self.hits:
             key = (hit.qseqid, hit.sseqid)
-            if key not in pair_dict:
+            if not hit.equal_organisms() and key not in pair_dict:
                 pair_dict[key] = hit
 
         return pair_dict
