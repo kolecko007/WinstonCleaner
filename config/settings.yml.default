@@ -1,4 +1,6 @@
 decross:
+  in_memory_db: false
+
   paths:
     input: /path/to/folder/with/data/
     output: /path/to/output/folder

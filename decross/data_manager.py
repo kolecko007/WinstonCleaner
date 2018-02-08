@@ -36,11 +36,11 @@ class DataManager:
             file_group = { 'reads_1': None, 'reads_2': None, 'contigs': None }
 
             for f in files:
-                if re.match(self.LEFT_READS_FNAME_REGEXP, f):
+                if re.match(DataManager.LEFT_READS_FNAME_REGEXP, f):
                     file_group['reads_1'] = f
-                elif re.match(self.RIGHT_READS_FNAME_REGEXP, f):
+                elif re.match(DataManager.RIGHT_READS_FNAME_REGEXP, f):
                     file_group['reads_2'] = f
-                elif re.match(self.CONTIGS_FNAME_REGEXP, f):
+                elif re.match(DataManager.CONTIGS_FNAME_REGEXP, f):
                     file_group['contigs'] = f
 
 

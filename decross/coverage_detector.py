@@ -1,6 +1,7 @@
 import sys, os
 import pickle, sqlite3
 from tqdm import tqdm
+from StringIO import StringIO
 
 from path_resolver import PathResolver
 
@@ -8,7 +9,9 @@ class DatabaseWorker:
     DEFAULT_DB_FILE_NAME = 'database.db'
     TIMEOUT = 10
 
-    def __init__(self, db_path=None):
+    IN_MEMORY_CONNECTION = None
+
+    def __init__(self, db_path=None, in_memory=False):
         if not db_path:
             db_path = self._default_db_path()
 
@@ -17,8 +20,27 @@ class DatabaseWorker:
         if not os.path.exists(db_path):
             open(db_path, 'w').close()
 
-        self.connection = sqlite3.connect(db_path, timeout=self.TIMEOUT)
-        self.cursor = self.connection.cursor()
+        if in_memory:
+            if not DatabaseWorker.IN_MEMORY_CONNECTION:
+                print 'init connection!!!!'
+                print
+                con = sqlite3.connect(db_path, timeout=self.TIMEOUT)
+                tempfile = StringIO()
+                for line in con.iterdump():
+                    tempfile.write('%s\n' % line)
+                con.close()
+                tempfile.seek(0)
+
+                DatabaseWorker.IN_MEMORY_CONNECTION = sqlite3.connect(":memory:")
+                DatabaseWorker.IN_MEMORY_CONNECTION.cursor().executescript(tempfile.read())
+                DatabaseWorker.IN_MEMORY_CONNECTION.commit()
+                DatabaseWorker.IN_MEMORY_CONNECTION.row_factory = sqlite3.Row
+
+            self.connection = DatabaseWorker.IN_MEMORY_CONNECTION
+            self.cursor = DatabaseWorker.IN_MEMORY_CONNECTION.cursor()
+        else:
+            self.connection = sqlite3.connect(db_path, timeout=self.TIMEOUT)
+            self.cursor = self.connection.cursor()
 
     def execute(self, query):
         self.cursor.execute(query)
@@ -32,8 +54,8 @@ class DatabaseWorker:
 class CoverageDetector:
     TABLE_NAME = 'coverage_entries'
 
-    def __init__(self, db_path=None):
-        self.db_loader = DatabaseWorker(db_path=db_path)
+    def __init__(self, db_path=None, in_memory=False):
+        self.db_loader = DatabaseWorker(db_path=db_path, in_memory=in_memory)
 
     def create_table(self):
         db_path = self.db_loader.db_path

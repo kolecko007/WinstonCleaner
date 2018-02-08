@@ -1,4 +1,6 @@
 decross:
+  in_memory_db: false
+
   paths:
     input: test/integration/input
     output: test/integration/output

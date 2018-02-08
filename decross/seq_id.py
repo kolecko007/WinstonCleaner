@@ -18,7 +18,7 @@ class SeqId:
         return self.internal_id == other.internal_id and self.external_id == other.external_id
 
     def _prepare_names(self):
-        groups = re.match(self.SYSTEM_NAME_REGEXP, self.seqid).groups()
+        groups = re.match(SeqId.SYSTEM_NAME_REGEXP, self.seqid).groups()
 
         if len(groups) == 0:
             raise RuntimeError("Wrong seq_id: %s" % self.seqid)

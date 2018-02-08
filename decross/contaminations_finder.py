@@ -40,7 +40,8 @@ class ContaminationsFinder:
 
         self.seq_dict = self._make_seq_dict()
         self.contaminations = []
-        self.coverage_detector = CoverageDetector()
+
+        self.coverage_detector = CoverageDetector(in_memory=Settings.decross.in_memory_db)
 
     def process(self):
         self._open_logs()
