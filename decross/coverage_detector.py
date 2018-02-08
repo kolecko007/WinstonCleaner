@@ -22,8 +22,6 @@ class DatabaseWorker:
 
         if in_memory:
             if not DatabaseWorker.IN_MEMORY_CONNECTION:
-                print 'init connection!!!!'
-                print
                 con = sqlite3.connect(db_path, timeout=self.TIMEOUT)
                 tempfile = StringIO()
                 for line in con.iterdump():
