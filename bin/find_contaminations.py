@@ -13,6 +13,7 @@ from decross.path_resolver import PathResolver
 from decross.name_converter import NameConverter
 from decross.types_manager import TypesManager
 from decross.contaminations_finder import ContaminationsFinder
+from decross.coverage_detector import DatabaseWorker
 
 SETTINGS_PATH = 'config/settings.yml'
 
@@ -35,6 +36,11 @@ def main():
 
     NameConverter.load()
     TypesManager.load()
+
+    if Settings.decross.in_memory_db:
+        logger.info('')
+        logger.info("Loading in-memory database\n")
+        DatabaseWorker.load_in_memory_db()
 
     one_vs_all_path = PathResolver.output_path_for(PathResolver.ONE_VS_ALL_FOLDER)
     paths = glob.glob(one_vs_all_path + '/*.blastab')

@@ -1,5 +1,5 @@
 decross:
-  in_memory_db: false
+  in_memory_db: true
 
   paths:
     input: test/integration/input
@@ -16,8 +16,8 @@ decross:
     right_eats_left: 0.1
 
   threads:
-    multithreading:  false
-    count: 1
+    multithreading:  true
+    count: 2
 
   tools:
     blast:

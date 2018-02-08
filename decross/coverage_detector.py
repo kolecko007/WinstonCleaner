@@ -11,29 +11,35 @@ class DatabaseWorker:
 
     IN_MEMORY_CONNECTION = None
 
-    def __init__(self, db_path=None, in_memory=False):
+    @staticmethod
+    def load_in_memory_db(db_path=None):
         if not db_path:
-            db_path = self._default_db_path()
+            db_path = DatabaseWorker._default_db_path()
+
+        if not DatabaseWorker.IN_MEMORY_CONNECTION:
+            con = sqlite3.connect(db_path, timeout=DatabaseWorker.TIMEOUT)
+            tempfile = StringIO()
+            for line in con.iterdump():
+                tempfile.write('%s\n' % line)
+            con.close()
+            tempfile.seek(0)
+
+            DatabaseWorker.IN_MEMORY_CONNECTION = sqlite3.connect(":memory:")
+            DatabaseWorker.IN_MEMORY_CONNECTION.cursor().executescript(tempfile.read())
+            DatabaseWorker.IN_MEMORY_CONNECTION.commit()
+            DatabaseWorker.IN_MEMORY_CONNECTION.row_factory = sqlite3.Row
+
+
+    def __init__(self, db_path=None):
+        if not db_path:
+            db_path = DatabaseWorker._default_db_path()
 
         self.db_path = db_path
 
         if not os.path.exists(db_path):
             open(db_path, 'w').close()
 
-        if in_memory:
-            if not DatabaseWorker.IN_MEMORY_CONNECTION:
-                con = sqlite3.connect(db_path, timeout=self.TIMEOUT)
-                tempfile = StringIO()
-                for line in con.iterdump():
-                    tempfile.write('%s\n' % line)
-                con.close()
-                tempfile.seek(0)
-
-                DatabaseWorker.IN_MEMORY_CONNECTION = sqlite3.connect(":memory:")
-                DatabaseWorker.IN_MEMORY_CONNECTION.cursor().executescript(tempfile.read())
-                DatabaseWorker.IN_MEMORY_CONNECTION.commit()
-                DatabaseWorker.IN_MEMORY_CONNECTION.row_factory = sqlite3.Row
-
+        if DatabaseWorker.IN_MEMORY_CONNECTION:
             self.connection = DatabaseWorker.IN_MEMORY_CONNECTION
             self.cursor = DatabaseWorker.IN_MEMORY_CONNECTION.cursor()
         else:
@@ -46,14 +52,15 @@ class DatabaseWorker:
     def commit(self):
         self.connection.commit()
 
-    def _default_db_path(self):
-        return PathResolver.output_path_for(self.DEFAULT_DB_FILE_NAME)
+    @staticmethod
+    def _default_db_path():
+        return PathResolver.output_path_for(DatabaseWorker.DEFAULT_DB_FILE_NAME)
 
 class CoverageDetector:
     TABLE_NAME = 'coverage_entries'
 
-    def __init__(self, db_path=None, in_memory=False):
-        self.db_loader = DatabaseWorker(db_path=db_path, in_memory=in_memory)
+    def __init__(self, db_path=None):
+        self.db_loader = DatabaseWorker(db_path=db_path)
 
     def create_table(self):
         db_path = self.db_loader.db_path
