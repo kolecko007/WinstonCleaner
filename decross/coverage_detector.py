@@ -9,26 +9,17 @@ class DatabaseWorker:
     DEFAULT_DB_FILE_NAME = 'database.db'
     TIMEOUT = 10
 
-    IN_MEMORY_CONNECTION = None
+    IN_MEMORY_DB = None
 
     @staticmethod
     def load_in_memory_db(db_path=None):
         if not db_path:
             db_path = DatabaseWorker._default_db_path()
 
-        if not DatabaseWorker.IN_MEMORY_CONNECTION:
-            con = sqlite3.connect(db_path, timeout=DatabaseWorker.TIMEOUT)
-            tempfile = StringIO()
-            for line in con.iterdump():
-                tempfile.write('%s\n' % line)
-            con.close()
-            tempfile.seek(0)
-
-            DatabaseWorker.IN_MEMORY_CONNECTION = sqlite3.connect(":memory:")
-            DatabaseWorker.IN_MEMORY_CONNECTION.cursor().executescript(tempfile.read())
-            DatabaseWorker.IN_MEMORY_CONNECTION.commit()
-            DatabaseWorker.IN_MEMORY_CONNECTION.row_factory = sqlite3.Row
-
+        conn = sqlite3.connect(db_path, timeout=DatabaseWorker.TIMEOUT)
+        cur = conn.cursor()
+        cur.execute("select * from coverage_entries")
+        DatabaseWorker.IN_MEMORY_DB = dict(cur.fetchall())
 
     def __init__(self, db_path=None):
         if not db_path:
@@ -39,11 +30,8 @@ class DatabaseWorker:
         if not os.path.exists(db_path):
             open(db_path, 'w').close()
 
-        if DatabaseWorker.IN_MEMORY_CONNECTION:
-            self.connection = DatabaseWorker.IN_MEMORY_CONNECTION
-            self.cursor = DatabaseWorker.IN_MEMORY_CONNECTION.cursor()
-        else:
-            self.connection = sqlite3.connect(db_path, timeout=self.TIMEOUT)
+        if not DatabaseWorker.IN_MEMORY_DB:
+            self.connection = sqlite3.connect(db_path, timeout=DatabaseWorker.TIMEOUT)
             self.cursor = self.connection.cursor()
 
     def execute(self, query):
@@ -123,6 +111,12 @@ class CoverageDetector:
         self.db_loader.commit()
 
     def kmer_by_contig_id(self, contig_id):
+        if DatabaseWorker.IN_MEMORY_DB:
+            if contig_id in DatabaseWorker.IN_MEMORY_DB:
+                return DatabaseWorker.IN_MEMORY_DB[contig_id]
+            else:
+                return None
+
         self.db_loader.execute("""
             SELECT * FROM `%s`
             WHERE `contig_id` = '%s';
