@@ -19,7 +19,7 @@ decross:
 
   tools:
     blast:
-      threads: 8
+      threads: 4
     bowtie2:
       threads: 8
 

@@ -8,9 +8,11 @@ from path_resolver import PathResolver
 class DataManager:
     READS_EXT = ['fq', 'fastq']
     READS_FNAME_REGEXP = '^(.+?)_%s\.(' + '|'.join(READS_EXT) + ')$'
+    LEFT_READS_FNAME_REGEXP = re.compile(READS_FNAME_REGEXP % 1)
+    RIGHT_READS_FNAME_REGEXP = re.compile(READS_FNAME_REGEXP % 2)
 
     CONTIGS_EXT = ['fa', 'fas', 'fasta']
-    CONTIGS_FNAME_REGEXP = '^(.+?)\.(' + '|'.join(CONTIGS_EXT) + ')$'
+    CONTIGS_FNAME_REGEXP = re.compile('^(.+?)\.(' + '|'.join(CONTIGS_EXT) + ')$')
 
     def __init__(self):
         self.datasets = []
@@ -34,9 +36,9 @@ class DataManager:
             file_group = { 'reads_1': None, 'reads_2': None, 'contigs': None }
 
             for f in files:
-                if re.match(self.READS_FNAME_REGEXP%1, f):
+                if re.match(self.LEFT_READS_FNAME_REGEXP, f):
                     file_group['reads_1'] = f
-                elif re.match(self.READS_FNAME_REGEXP%2, f):
+                elif re.match(self.RIGHT_READS_FNAME_REGEXP, f):
                     file_group['reads_2'] = f
                 elif re.match(self.CONTIGS_FNAME_REGEXP, f):
                     file_group['contigs'] = f

@@ -7,6 +7,9 @@ class SeqId:
         Takes dataset contig id
         Extracts internal and external organism names
     """
+
+    SYSTEM_NAME_REGEXP = re.compile(r'(\w{32})_')
+
     def __init__(self, seqid):
         self.seqid = seqid
         self._prepare_names()
@@ -15,7 +18,7 @@ class SeqId:
         return self.internal_id == other.internal_id and self.external_id == other.external_id
 
     def _prepare_names(self):
-        groups = re.match(r'(\w{32})_', self.seqid).groups()
+        groups = re.match(self.SYSTEM_NAME_REGEXP, self.seqid).groups()
 
         if len(groups) == 0:
             raise RuntimeError("Wrong seq_id: %s" % self.seqid)
