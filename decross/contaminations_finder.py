@@ -19,7 +19,9 @@ class ContaminationsFinder:
         Saves clean, contaminated contigs and statistics files
     """
 
-    FILES = { 'deleted': 'fasta',
+    FILES = {
+              'clean': 'fasta',
+              'deleted': 'fasta',
               'records': 'csv',
               'deleted_stats': 'csv',
               'missing_kmers': 'csv',
@@ -37,8 +39,6 @@ class ContaminationsFinder:
         self.internal_name = NameConverter.ext_to_int(self.external_name)
         self.blastab = OneVsAll(file_path)
         self.dataset = Dataset(self.external_name)
-
-        self.seq_dict = self._make_seq_dict()
         self.contaminations = []
 
         self.coverage_detector = CoverageDetector()
@@ -47,30 +47,14 @@ class ContaminationsFinder:
         self._open_logs()
 
         for seq_id, hits in self.blastab.hits_dict.iteritems():
-            seq_id = SeqId(seq_id)
-            status = self._analyze_sequence(seq_id, hits)
+            self._analyze_sequence(SeqId(seq_id), hits)
 
-            if status == 'good':
-                pass
-            elif status == 'bad':
-                seq_rec = SeqRecord(Seq(self.seq_dict[seq_id.seqid]), id=seq_id.original_seqid,
-                                                                      description='')
-                SeqIO.write(seq_rec, self.logs['deleted'], "fasta")
-            else:
-                raise Exception("Wrong status: %s" % status)
-
-        contaminated_from = [h.subject_seq_id.external_id for h in self.contaminations]
-        stats = { i: contaminated_from.count(i) for i in list(set(contaminated_from)) }
-
-        for name, cnt in stats.iteritems():
-            self.logs['contaminations'].write('%s,%s\n' % (name, cnt))
+        self._log_contaminations()
+        self._log_results()
 
         self._close_logs()
-        self._clean_dataset()
 
     def _analyze_sequence(self, seq_id, hits):
-        status = 'good'
-
         own_kmer = self._detect_kmer(seq_id.seqid, self.DEFAULT_OWN_KMER)
 
         for hit in hits:
@@ -91,12 +75,7 @@ class ContaminationsFinder:
             if not ratio:
                 raise Exception("Cannot detect ratio")
 
-            if hit_kmer == 0:
-                hit_kmer = self.DEFAULT_HIT_KMER
-
             if own_kmer/hit_kmer <= ratio: # our is less or equal than 1.5x of their
-                status = 'bad'
-
                 self.contaminations.append(hit)
 
                 threshold = TypesManager.get_threshold(hit.query_seq_id.external_id,
@@ -107,8 +86,6 @@ class ContaminationsFinder:
                         hit_kmer, pair_type, threshold)
                 self.logs['deleted_stats'].write("%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % line)
 
-        return status
-
     def _open_logs(self):
         for name, ext in self.FILES.iteritems():
             f_name = '%s_%s.%s' % (self.external_name, name, ext)
@@ -117,17 +94,6 @@ class ContaminationsFinder:
     def _close_logs(self):
         for name in self.logs:
             self.logs[name].close()
-
-    def _make_seq_dict(self):
-        with open(self._dataset_path(), 'r') as f:
-            line = f.read()
-
-        seqs = line.split('>')
-        seqs = seqs[1:]
-        d = {}
-        for seq in seqs:
-            d[seq.split()[0].strip()] = ''.join(seq.split('\n')[1:])
-        return d
 
     def _dataset_path(self):
         return self.dataset.contigs_output_path()
@@ -141,16 +107,20 @@ class ContaminationsFinder:
             self.logs['missing_kmers'].write('%s\n' % (contig_id))
             return float(default_value)
 
-    def _clean_dataset(self):
-        if len(self.contaminations) == 0:
-            return True
+    def _log_contaminations(self):
+        contaminated_from = [h.subject_seq_id.external_id for h in self.contaminations]
+        stats = { i: contaminated_from.count(i) for i in list(set(contaminated_from)) }
 
-        in_path = self._dataset_path()
-        out_path = PathResolver.results_path_for("%s_clean.fasta" % self.external_name)
+        for name, cnt in stats.iteritems():
+            self.logs['contaminations'].write('%s,%s\n' % (name, cnt))
+
+    def _log_results(self):
         contaminated_ids = [s.query_seq_id.seqid for s in self.contaminations]
 
-        with open(out_path, 'w') as out_f:
-            for record in SeqIO.parse(in_path, "fasta"):
-                if record.id not in contaminated_ids:
-                    record.id = record.description = SeqId(record.id).original_seqid
-                    SeqIO.write(record, out_f, "fasta")
+        for record in SeqIO.parse(self._dataset_path(), "fasta"):
+            record.id = record.description = SeqId(record.id).original_seqid
+
+            if record.id in contaminated_ids:
+                SeqIO.write(record, self.logs['deleted'], "fasta")
+            else:
+                SeqIO.write(record, self.logs['clean'], "fasta")

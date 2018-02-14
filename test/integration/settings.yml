@@ -16,7 +16,7 @@ decross:
     right_eats_left: 0.1
 
   threads:
-    multithreading:  true
+    multithreading: false
     count: 2
 
   tools:

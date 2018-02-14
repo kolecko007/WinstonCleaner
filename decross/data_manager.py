@@ -120,7 +120,11 @@ class Dataset:
         out_file_path = self.contigs_output_path()
         system_id = self.internal_name
 
-        command = 'sed -i "s#^>\(.*\)\$#>%s_\\1#" %s'
+        if subprocess.check_output('uname -s', shell=True).strip() == 'Darwin':
+            command = 'sed -i "" "s#^>\(.*\)\$#>%s_\\1#" %s'
+        else:
+            command = 'sed -i "s#^>\(.*\)\$#>%s_\\1#" %s'
+
         command = command % (system_id, out_file_path)
         subprocess.call(command, shell=True)
 
