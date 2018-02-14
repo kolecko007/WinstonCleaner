@@ -75,6 +75,9 @@ class ContaminationsFinder:
             if not ratio:
                 raise Exception("Cannot detect ratio")
 
+            if hit_kmer == 0:
+                hit_kmer = self.DEFAULT_HIT_KMER
+
             if own_kmer/hit_kmer <= ratio: # our is less or equal than 1.5x of their
                 self.contaminations.append(hit)
 
@@ -118,9 +121,10 @@ class ContaminationsFinder:
         contaminated_ids = [s.query_seq_id.seqid for s in self.contaminations]
 
         for record in SeqIO.parse(self._dataset_path(), "fasta"):
+            current_seq_id = record.id
             record.id = record.description = SeqId(record.id).original_seqid
 
-            if record.id in contaminated_ids:
+            if current_seq_id in contaminated_ids:
                 SeqIO.write(record, self.logs['deleted'], "fasta")
             else:
                 SeqIO.write(record, self.logs['clean'], "fasta")
