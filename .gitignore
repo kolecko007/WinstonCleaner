@@ -2,7 +2,9 @@
 *.yml
 *.idea
 *.pbs
+*.DS_Store
 
+tmp/*
 test/simulation/data/*
 test/simulation/data/*/
 !test/simulation/data/datasets/

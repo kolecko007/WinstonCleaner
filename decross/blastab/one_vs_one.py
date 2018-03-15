@@ -62,7 +62,6 @@ class OneVsOne(Blastab):
         right_name = self.right_org_external_name()
 
         title = left_name + " vs " + right_name + " (threshold: " + str(self.threshold) + ", " + str(len(self.histogram.hits)) + " hits)"
-
         plt.title(title, color='red', fontsize=8)
 
         self.histogram.plot(plt)
@@ -84,7 +83,7 @@ class OneVsOne(Blastab):
         return self.org_external_names()[1]
 
     def org_external_names(self):
-        return os.path.splitext(os.path.basename(self.file_path))[0].split('_vs_')
+        return os.path.splitext(os.path.basename(self.file_path))[0].upper().split('_VS_')
 
     def left_dataset_count(self):
         return self.left_dataset.contigs_count()
@@ -105,7 +104,7 @@ class OneVsOne(Blastab):
 
         for name, array in name_hash.iteritems():
             if len(array) == 0:
-                raise 'Error: array should not be empty'
+                raise Exception('Error: array should not be empty')
 
             if len(array) == 1:
                 merged.append(array[0])
@@ -135,7 +134,7 @@ class OneVsOne(Blastab):
     def is_close(self):
         return self.detect_type() == self.TYPES[3]
 
-    def is_absolutely_identical():
+    def is_absolutely_identical(self):
         return self.left_org_external_name() == self.right_org_external_name()
 
     def is_possibly_identical(self):

@@ -128,8 +128,8 @@ class BlastHistogram():
         ax.set_xticks(np.arange(0, 101, 10))
         ax.set_xticks(np.arange(0, 101, 1), minor=True)
 
-        left_count = self.blastab.left_dataset_count()
-        right_count = self.blastab.right_dataset_count()
+        ax.set_xlabel('pident, %')
+        ax.set_ylabel('hits')
 
         for idx, val in enumerate(self.histogram):
             x = self.x_coord_by_index(idx)
