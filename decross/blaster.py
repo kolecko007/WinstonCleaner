@@ -55,7 +55,7 @@ class Blaster:
         left_org_name = os.path.splitext(os.path.basename(left_path))[0]
         db_path = self._db_folder_path(right_org_name)
 
-        outfile_name = '%s_vs_%s.%s' % (left_org_name, right_org_name, self.BLAST_RESULT_EXT)
+        outfile_name = '%s_VS_%s.%s' % (left_org_name, right_org_name, self.BLAST_RESULT_EXT)
         output_path = PathResolver.output_path_for(PathResolver.ALL_VS_ALL_FOLDER, outfile_name)
 
         threads_cnt = Settings.decross.tools.blast.threads
@@ -68,7 +68,7 @@ class Blaster:
 
         files = {}
         for f_path in glob.glob(all_vs_all_path + '/*.%s' % self.BLAST_RESULT_EXT):
-            left_org_id = os.path.splitext(os.path.basename(f_path))[0].split('_vs_')[0]
+            left_org_id = os.path.splitext(os.path.basename(f_path))[0].split('_VS_')[0]
 
             if left_org_id not in files:
                 files[left_org_id] = []

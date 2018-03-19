@@ -23,8 +23,8 @@ class ContaminationsFinder:
     FILES = {
               'clean': 'fasta',
               'deleted': 'fasta',
-              'records': 'csv',
-              'deleted_stats': 'csv',
+              'hits': 'csv',
+              'suspicious_hits': 'csv',
               'missing_kmers': 'csv',
               'contaminations': 'csv',
               'contamination_sources': 'csv'}
@@ -62,10 +62,8 @@ class ContaminationsFinder:
         for hit in hits:
             hit._query_RPKM = query_rpkm # caching
             subject_rpkm = hit.subject_RPKM()
-            self.logs['records'].write('%s,%s,%s,%s\n' % (seq_id.original_seqid,
-                                                          hit.subject_seq_id.original_seqid,
-                                                          query_rpkm,
-                                                          subject_rpkm))
+            hit_line = hit.to_s()
+            self.logs['hits'].write('%s\n' % hit.to_s())
 
             # check type and threshold
             pair_type = TypesManager.get_type(seq_id.external_id, hit.subject_seq_id.external_id)
@@ -92,7 +90,7 @@ class ContaminationsFinder:
                                                        hit.subject_seq_id.external_id)
 
                 hit_line = hit.to_s()
-                self.logs['deleted_stats'].write("%s,%s,%s\n" % (hit_line, pair_type, threshold))
+                self.logs['suspicious_hits'].write("%s,%s,%s\n" % (hit_line, pair_type, threshold))
 
         if own_seq_id in self.suspicious_hits and len(self.suspicious_hits[own_seq_id]) > 0:
             self.contaminations.append(self._get_best_hit(self.suspicious_hits[own_seq_id]))

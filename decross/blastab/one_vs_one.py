@@ -61,7 +61,7 @@ class OneVsOne(Blastab):
         left_name = self.left_org_external_name()
         right_name = self.right_org_external_name()
 
-        title = left_name + " vs " + right_name + " (threshold: " + str(self.threshold) + ", " + str(len(self.histogram.hits)) + " hits)"
+        title = left_name + " VS " + right_name + " (threshold: " + str(self.threshold) + ", " + str(len(self.histogram.hits)) + " hits)"
         plt.title(title, color='red', fontsize=8)
 
         self.histogram.plot(plt)
@@ -83,7 +83,7 @@ class OneVsOne(Blastab):
         return self.org_external_names()[1]
 
     def org_external_names(self):
-        return os.path.splitext(os.path.basename(self.file_path))[0].split('_vs_')
+        return os.path.splitext(os.path.basename(self.file_path))[0].split('_VS_')
 
     def left_dataset_count(self):
         return self.left_dataset.contigs_count()

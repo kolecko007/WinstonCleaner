@@ -40,7 +40,7 @@ def analyze_blastab(file_path):
         with open(PathResolver.pair_types_path(), 'a') as output:
             output.write(",".join(data) + "\n")
 
-    hits_filename = "%s_vs_%s.png" % (left_name, right_name)
+    hits_filename = "%s_VS_%s.png" % (left_name, right_name)
     hist_path = PathResolver.output_path_for(PathResolver.HITSOGRAMS_FOLDER, hits_filename)
     blastab.plot(hist_path)
 
