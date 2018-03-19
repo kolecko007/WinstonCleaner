@@ -83,7 +83,7 @@ class OneVsOne(Blastab):
         return self.org_external_names()[1]
 
     def org_external_names(self):
-        return os.path.splitext(os.path.basename(self.file_path))[0].upper().split('_VS_')
+        return os.path.splitext(os.path.basename(self.file_path))[0].split('_vs_')
 
     def left_dataset_count(self):
         return self.left_dataset.contigs_count()

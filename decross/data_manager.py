@@ -4,6 +4,7 @@ from pathlib import Path
 from settings import Settings
 from name_converter import NameConverter
 from path_resolver import PathResolver
+from Bio import SeqIO
 
 class DataManager:
     READS_EXT = ['fq', 'fastq']
@@ -118,15 +119,19 @@ class Dataset:
 
     def _rename_contigs_titles(self):
         out_file_path = self.contigs_output_path()
+        tmp_file_path = out_file_path + '.tmp'
         system_id = self.internal_name
 
-        if subprocess.check_output('uname -s', shell=True).strip() == 'Darwin':
-            command = 'sed -i "" "s#^>\(.*\)\$#>%s_\\1#" %s'
-        else:
-            command = 'sed -i "s#^>\(.*\)\$#>%s_\\1#" %s'
+        with open(out_file_path) as out_f, open(tmp_file_path, 'w') as tmp_f:
+            for record in SeqIO.parse(out_f, 'fasta'):
+                new_id = record.id
+                new_id = re.split('\s+', new_id)[0]
+                new_id = "%s_%s" % (system_id, new_id)
+                record.id = new_id
+                record.description = ''
+                SeqIO.write(record, tmp_f, 'fasta')
 
-        command = command % (system_id, out_file_path)
-        subprocess.call(command, shell=True)
+        subprocess.call('mv %s %s' % (tmp_file_path, out_file_path), shell=True)
 
     def _get_output_path(self, input_path):
         file_name = os.path.basename(input_path)

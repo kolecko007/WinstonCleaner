@@ -51,12 +51,6 @@ class CoverageDetector:
         self.db_loader = DatabaseWorker(db_path=db_path)
 
     def create_table(self):
-        db_path = self.db_loader.db_path
-
-        if os.path.exists(db_path):
-            os.remove(db_path)
-            self.db_loader = DatabaseWorker(db_path=db_path)
-
         self.db_loader.execute("""
             create table if not exists `%s` (
             `contig_id` char[256] NOT NULL,
@@ -84,14 +78,12 @@ class CoverageDetector:
 
     def load_from_bb_tools_rpkm(self, file_path):
         items = {}
-
         with open(file_path, 'r') as f:
             for line in f.readlines():
                 if line.startswith('#'):
                     continue
                 splitted = line.split('\t')
                 items[splitted[0].split(' ')[0]] = [float(splitted[5])]
-
         self.load_from_hash(items)
 
     def load_from_hash(self, items):

@@ -5,6 +5,11 @@ decross:
     input: /path/to/folder/with/data/
     output: /path/to/output/folder
 
+    tools:
+      pileup_sh: pileup.sh
+      bowtie2: bowtie2
+      bowtie2_build: bowtie2_build
+
   hits_filtering:
     len_ratio: 70
     len_minimum: 100
@@ -24,7 +29,3 @@ decross:
       threads: 8
     bowtie:
       threads: 8
-
-#   pileup_sh: pileup.sh
-#   bowtie2: bowtie2
-#   bowtie2_build: bowtie2_build
