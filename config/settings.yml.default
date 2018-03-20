@@ -5,24 +5,19 @@ decross:
     input: /path/to/folder/with/data/
     output: /path/to/output/folder
 
-    tools:
-      pileup_sh: pileup.sh
-      bowtie2: bowtie2
-      bowtie2_build: bowtie2_build
-
   hits_filtering:
     len_ratio: 70
     len_minimum: 100
 
   coverage_ratio:
-    regular: 1.5
+    regular: 1.1
     close: 0.04
     left_eats_right: 10
     right_eats_left: 0.1
 
   threads:
-    multithreading:  false
-    count:   1
+    multithreading:  true
+    count:   8
 
   tools:
     blast:
