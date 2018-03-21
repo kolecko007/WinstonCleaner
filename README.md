@@ -162,7 +162,7 @@ For each datasets there will be the following structure of files.
 * **DATASET_NAME_contamination_sources.csv** &mdash; 
 sources of contaminations with a following columns: source contamination dataset name, number of sequences
 * **DATASET_NAME_contaminations.csv** &mdash; list of blast hits from which contaminations were detected
-* **DATASET_NAME_missing_rpkms.csv** &mdash; list of contig ids without a coverage
+* **DATASET_NAME_missing_coverage.csv** &mdash; list of contig ids without a coverage
 
 
 # TODO
