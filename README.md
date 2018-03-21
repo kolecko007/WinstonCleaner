@@ -96,8 +96,8 @@ decross:
     len_minimum: 100
 
   coverage_ratio:
-    regular: 1.1
-    close: 0.04
+    REGULAR: 1.1
+    CLOSE: 0.04
 
   threads:
     multithreading:  true
@@ -133,15 +133,15 @@ prey,predator,95.0,RIGHT_EATS_LEFT
 ``` 
 
 In these case coverage ratio for each custom type must be specified in `decross.coverage_ratio` section of
- `settings.yml` file in lowercase:
+ `settings.yml` file:
  
 ```
 ...
   coverage_ratio:
-    regular: 1.1
-    close: 0.04
-    left_eats_right: 10
-    right_eats_left: 0.1
+    REGULAR: 1.1
+    CLOSE: 0.04
+    LEFT_EATS_RIGHT: 10
+    RIGHT_EATS_LEFT: 0.1
 ...
 ```
 
