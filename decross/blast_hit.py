@@ -27,6 +27,7 @@ class BlastHit():
 
         self._query_RPKM = None
         self._subject_RPKM = None
+        self.missing_RPKMs = []
 
     def calculate_qlen(self):
         return self.qend - (self.qstart - 1)
@@ -42,6 +43,7 @@ class BlastHit():
             self._query_RPKM = self._detect_RPKM(self.query_seq_id.seqid)
 
             if self._query_RPKM == None:
+                self.missing_RPKMs.append(self.query_seq_id.original_seqid)
                 self._query_RPKM = self.DEFAULT_QUERY_RPKM
 
         return self._query_RPKM
@@ -51,6 +53,7 @@ class BlastHit():
             self._subject_RPKM = self._detect_RPKM(self.subject_seq_id.seqid)
 
             if self._subject_RPKM == None:
+                self.missing_RPKMs.append(self.subject_seq_id.original_seqid)
                 self._subject_RPKM = self.DEFAULT_SUBJECT_RPKM
 
         return self._subject_RPKM

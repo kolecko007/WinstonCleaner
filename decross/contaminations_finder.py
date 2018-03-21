@@ -24,7 +24,7 @@ class ContaminationsFinder:
               'clean': 'fasta',
               'deleted': 'fasta',
               'suspicious_hits': 'csv',
-              'missing_rpkms': 'csv',
+              'missing_coverage': 'csv',
               'contaminations': 'csv',
               'contamination_sources': 'csv'}
 
@@ -61,6 +61,10 @@ class ContaminationsFinder:
         for hit in hits:
             hit._query_RPKM = query_rpkm # caching
             subject_rpkm = hit.subject_RPKM()
+
+            if len(hit.missing_RPKMs) > 0:
+                for seqid in hit.missing_RPKMs:
+                    self.logs['missing_coverage'].write("%s\n" % (seqid))
 
             # check type and threshold
             pair_type = TypesManager.get_type(seq_id.external_id, hit.subject_seq_id.external_id)
