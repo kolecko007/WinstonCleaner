@@ -23,9 +23,8 @@ class ContaminationsFinder:
     FILES = {
               'clean': 'fasta',
               'deleted': 'fasta',
-              'hits': 'csv',
               'suspicious_hits': 'csv',
-              'missing_kmers': 'csv',
+              'missing_rpkms': 'csv',
               'contaminations': 'csv',
               'contamination_sources': 'csv'}
 
@@ -62,8 +61,6 @@ class ContaminationsFinder:
         for hit in hits:
             hit._query_RPKM = query_rpkm # caching
             subject_rpkm = hit.subject_RPKM()
-            hit_line = hit.to_s()
-            self.logs['hits'].write('%s\n' % hit.to_s())
 
             # check type and threshold
             pair_type = TypesManager.get_type(seq_id.external_id, hit.subject_seq_id.external_id)
@@ -71,7 +68,7 @@ class ContaminationsFinder:
             if pair_type == self.NO_CONTAMINATION_TYPE: # NO
                 continue
 
-            ratio = getattr(Settings.decross.coverage_ratio, pair_type.lower())
+            ratio = getattr(Settings.decross.coverage_ratio, pair_type)
 
             if not ratio:
                 raise Exception("Cannot detect ratio")

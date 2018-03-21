@@ -10,10 +10,10 @@ decross:
     len_minimum: 100
 
   coverage_ratio:
-    regular: 1.5
-    close: 0.04
-    left_eats_right: 10
-    right_eats_left: 0.1
+    REGULAR: 1.5
+    CLOSE: 0.04
+    LEFT_EATS_RIGHT: 10
+    RIGHT_EATS_LEFT: 0.1
 
   threads:
     multithreading: false
