@@ -28,6 +28,8 @@ To run WinstonCleaner, the following requirements must be satisfied:
 
     `cp config/settings.yml.default config/settings.yml`
 
+3. Check installation by running `test/integration/run.sh` from `WinstonCleaner` folder
+
 # Quick Start
 1. Prepare the folder with input data and an empty folder for the results
 1. Open `config/settings.yml` and specify input and output paths
