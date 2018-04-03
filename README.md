@@ -1,12 +1,12 @@
 # Decross
-Decross is a software tool for detecting and removing cross-contaminated 
+WinstonCleaner is a software tool for detecting and removing cross-contaminated 
 contigs from assembled transcriptomes. The program uses BLAST to identify 
 suspicious contigs and RPKM values to sort these as either correct or 
 contamination. 
 
 # Requirements
 
-To run Decross, the following requirements must be satisfied:
+To run WinstonCleaner, the following requirements must be satisfied:
 * Python 2.7
 * [blast](https://blast.ncbi.nlm.nih.gov/Blast.cgi)
 * [bbtools](https://jgi.doe.gov/data-and-tools/bbtools/) (`pileup.sh`)
@@ -16,9 +16,9 @@ To run Decross, the following requirements must be satisfied:
 
 0. Checkout repository
 
-    `git clone git@github.com:kolecko007/decross_final.git`
+    `git clone git@github.com:kolecko007/WinstonCleaner.git`
     
-    `cd decross_final`
+    `cd WinstonCleaner`
 
 1. Install pip dependencies:
 
@@ -111,7 +111,7 @@ decross:
 ```
 
 ## Data preparation
-The first step is to prepare the data for decross processing.
+The first step is to prepare the data for WinstonCleaner processing.
 
 `bin/prepare_data.py`
 
