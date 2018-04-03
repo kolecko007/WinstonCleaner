@@ -14,21 +14,21 @@ To run WinstonCleaner, the following requirements must be satisfied:
 
 # Installation
 
-0. Checkout repository
+1. Checkout repository
 
     `git clone git@github.com:kolecko007/WinstonCleaner.git`
     
     `cd WinstonCleaner`
 
-1. Install pip dependencies:
+2. Install pip dependencies:
 
     `pip2 install --user -r requirements.txt`
 
-2. Initialize settings:
+3. Initialize settings:
 
     `cp config/settings.yml.default config/settings.yml`
 
-3. Check installation by running `test/integration/run.sh` from `WinstonCleaner` folder
+4. Check installation by running `test/integration/run.sh` from `WinstonCleaner` folder
 
 # Quick Start
 1. Prepare the folder with input data and an empty folder for the results
