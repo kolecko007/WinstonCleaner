@@ -78,7 +78,7 @@ All the settings are declared in `config/settings.yml`.
 * `decross.threads.count` &mdash; number of threads if multithreading enabled
 * `decross.tools.blast.threads` &mdash; number of threads for BLAST processing
 * `decross.tools.bowtie.threads` &mdash; number of threads for bowtie2 processing
-* `decross.in_memory_db` &mdash; (`true`|`false`) load coverage database to RAM in the beginning. 
+* `decross.in_memory_db` &mdash; load coverage database to RAM in the beginning. 
 Makes contamination lookup faster, but requires decent amount of memory.
 
 The default configuration can be found in file `config/settings.yml.default`.
