@@ -16,7 +16,7 @@ To run WinstonCleaner, the following requirements must be satisfied:
 
 1. Checkout repository
 
-    `git clone git@github.com:kolecko007/WinstonCleaner.git`
+    `git clone https://github.com/kolecko007/WinstonCleaner.git`
     
     `cd WinstonCleaner`
 
