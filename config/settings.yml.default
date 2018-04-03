@@ -20,5 +20,5 @@ decross:
   tools:
     blast:
       threads: 8
-    bowtie:
+    bowtie2:
       threads: 8
