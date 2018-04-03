@@ -4,8 +4,8 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
-from decross.blastab.one_vs_all import OneVsAll
-from decross.blast_hit import BlastHit
+from winston.blastab.one_vs_all import OneVsAll
+from winston.blast_hit import BlastHit
 from types_manager import TypesManager
 from path_resolver import PathResolver
 from seq_id import SeqId
@@ -72,7 +72,7 @@ class ContaminationsFinder:
             if pair_type == self.NO_CONTAMINATION_TYPE: # NO
                 continue
 
-            ratio = getattr(Settings.decross.coverage_ratio, pair_type)
+            ratio = getattr(Settings.winston.coverage_ratio, pair_type)
 
             if not ratio:
                 raise Exception("Cannot detect ratio")

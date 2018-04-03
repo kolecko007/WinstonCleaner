@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT_PATH = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 sys.path.append(ROOT_PATH)
 
-from decross.types_manager import TypesManager
+from winston.types_manager import TypesManager
 
 class TestTypesManager(unittest.TestCase):
     TYPES_PATH = 'test/test_types.csv'

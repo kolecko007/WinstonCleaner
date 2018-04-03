@@ -13,8 +13,8 @@ class OneVsAll(Blastab):
         pair_dict = self._build_pair_dict()
 
         result = {}
-        len_ratio = Settings.decross.hits_filtering.len_ratio
-        len_minimum = Settings.decross.hits_filtering.len_minimum
+        len_ratio = Settings.winston.hits_filtering.len_ratio
+        len_minimum = Settings.winston.hits_filtering.len_minimum
 
         for pair, blast_hit in pair_dict.iteritems():
             left_seq_id = blast_hit.query_seq_id

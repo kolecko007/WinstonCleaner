@@ -64,27 +64,27 @@ All the files must be placed together in one folder.
 
 All the settings are declared in `config/settings.yml`.
 
-* `decross.paths.input` &mdash; input folder with reads and contigs
-* `decross.paths.output` &mdash; output folder with the results
-* `decross.paths.tools.pileup_sh` &mdash; (_optional_) bbtools `pileup.sh` execution command
-* `decross.paths.tools.bowtie2` &mdash; (_optional_) bowtie2 execution command
-* `decross.paths.tools.bowtie2_build` &mdash; (_optional_) bowtie2-build execution command
-* `decross.hits_filtering.len_ratio` &mdash; minimal `qcovhsp` for hits filtering
-* `decross.hits_filtering.len_minimum` &mdash; minimal hit lenth for hits filtering
-* `decross.coverage_ratio.regular` &mdash; coverage ratio for REGULAR dataset pair type 
+* `winston.paths.input` &mdash; input folder with reads and contigs
+* `winston.paths.output` &mdash; output folder with the results
+* `winston.paths.tools.pileup_sh` &mdash; (_optional_) bbtools `pileup.sh` execution command
+* `winston.paths.tools.bowtie2` &mdash; (_optional_) bowtie2 execution command
+* `winston.paths.tools.bowtie2_build` &mdash; (_optional_) bowtie2-build execution command
+* `winston.hits_filtering.len_ratio` &mdash; minimal `qcovhsp` for hits filtering
+* `winston.hits_filtering.len_minimum` &mdash; minimal hit lenth for hits filtering
+* `winston.coverage_ratio.regular` &mdash; coverage ratio for REGULAR dataset pair type 
 (lower values make contamination prediction more strict, less contaminations will be found)
-* `decross.coverage_ratio.close` &mdash; coverage ratio for CLOSE dataset pair type
-* `decross.threads.multithreading` &mdash; enable multithreading (disabling is convenient for debugging purposes)
-* `decross.threads.count` &mdash; number of threads if multithreading enabled
-* `decross.tools.blast.threads` &mdash; number of threads for BLAST processing
-* `decross.tools.bowtie.threads` &mdash; number of threads for bowtie2 processing
-* `decross.in_memory_db` &mdash; load coverage database to RAM in the beginning. 
+* `winston.coverage_ratio.close` &mdash; coverage ratio for CLOSE dataset pair type
+* `winston.threads.multithreading` &mdash; enable multithreading (disabling is convenient for debugging purposes)
+* `winston.threads.count` &mdash; number of threads if multithreading enabled
+* `winston.tools.blast.threads` &mdash; number of threads for BLAST processing
+* `winston.tools.bowtie.threads` &mdash; number of threads for bowtie2 processing
+* `winston.in_memory_db` &mdash; load coverage database to RAM in the beginning. 
 Makes contamination lookup faster, but requires decent amount of memory.
 
 The default configuration can be found in file `config/settings.yml.default`.
 
 ```
-decross:
+winston:
   in_memory_db: false
 
   paths:
@@ -115,7 +115,7 @@ The first step is to prepare the data for WinstonCleaner processing.
 
 `bin/prepare_data.py`
 
-The result will be stored in the folder, specified in `decross.paths.output` option.
+The result will be stored in the folder, specified in `winston.paths.output` option.
 
 After the preparation the file `types.csv` can be inspected and edited.
 It contains all possible combinations of dataset pairs and their types.
@@ -132,7 +132,7 @@ predator,prey,95.0,LEFT_EATS_RIGHT
 prey,predator,95.0,RIGHT_EATS_LEFT
 ``` 
 
-In these case coverage ratio for each custom type must be specified in `decross.coverage_ratio` section of
+In these case coverage ratio for each custom type must be specified in `winston.coverage_ratio` section of
  `settings.yml` file:
  
 ```
@@ -152,7 +152,7 @@ In these case coverage ratio for each custom type must be specified in `decross.
 
 ## Output
 
-The results will be saved in the folder, specified in `decross.paths.output` option.
+The results will be saved in the folder, specified in `winston.paths.output` option.
 
 For each datasets there will be the following structure of files.
 

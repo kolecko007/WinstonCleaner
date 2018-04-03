@@ -1,4 +1,4 @@
-decross:
+winston:
   in_memory_db: false
 
   paths:

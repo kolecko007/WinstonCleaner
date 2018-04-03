@@ -58,7 +58,7 @@ class Blaster:
         outfile_name = '%s_VS_%s.%s' % (left_org_name, right_org_name, self.BLAST_RESULT_EXT)
         output_path = PathResolver.output_path_for(PathResolver.ALL_VS_ALL_FOLDER, outfile_name)
 
-        threads_cnt = Settings.decross.tools.blast.threads
+        threads_cnt = Settings.winston.tools.blast.threads
         command = command % (left_path, db_path, output_path, self.COLUMNS, threads_cnt)
 
         subprocess.call(command, shell=True)

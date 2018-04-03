@@ -8,14 +8,14 @@ from tqdm import tqdm
 ROOT_PATH = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 sys.path.append(ROOT_PATH)
 
-from decross.settings import Settings
-from decross.path_resolver import PathResolver
-from decross.data_manager import DataManager
-from decross.name_converter import NameConverter
-from decross.coverage_detector import CoverageDetector
-from decross.mapper import Mapper
-from decross.blaster import Blaster
-from decross.blastab.one_vs_one import OneVsOne
+from winston.settings import Settings
+from winston.path_resolver import PathResolver
+from winston.data_manager import DataManager
+from winston.name_converter import NameConverter
+from winston.coverage_detector import CoverageDetector
+from winston.mapper import Mapper
+from winston.blaster import Blaster
+from winston.blastab.one_vs_one import OneVsOne
 
 parser = OptionParser(description="Main contamination finder script")
 parser.add_option("--config_path", help="Alternative config path")
@@ -85,8 +85,8 @@ def main():
     global outfile_lock
     outfile_lock = Lock()
 
-    if Settings.decross.threads.multithreading:
-        pool = Pool(int(Settings.decross.threads.count))
+    if Settings.winston.threads.multithreading:
+        pool = Pool(int(Settings.winston.threads.count))
         for _ in tqdm(pool.imap(analyze_blastab, paths), total=len(paths)):
             pass
     else:

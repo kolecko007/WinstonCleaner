@@ -53,11 +53,11 @@ class PathResolver:
 
     @staticmethod
     def input_path():
-        return Settings.decross.paths.input.rstrip('/')
+        return Settings.winston.paths.input.rstrip('/')
 
     @staticmethod
     def output_path():
-        return Settings.decross.paths.output.rstrip('/')
+        return Settings.winston.paths.output.rstrip('/')
 
 
 

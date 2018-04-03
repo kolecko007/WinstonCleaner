@@ -7,9 +7,9 @@ from optparse import OptionParser
 ROOT_PATH = str(Path(os.path.dirname(os.path.realpath(__file__))).parent.parent)
 sys.path.append(ROOT_PATH)
 
-from decross.blastab.one_vs_one import OneVsOne
-from decross.settings import Settings
-from decross.path_resolver import PathResolver
+from winston.blastab.one_vs_one import OneVsOne
+from winston.settings import Settings
+from winston.path_resolver import PathResolver
 
 parser = OptionParser()
 parser.add_option("-d", "--datasets_path",

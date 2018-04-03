@@ -8,12 +8,12 @@ from tqdm import tqdm
 ROOT_PATH = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 sys.path.append(ROOT_PATH)
 
-from decross.settings import Settings
-from decross.path_resolver import PathResolver
-from decross.name_converter import NameConverter
-from decross.types_manager import TypesManager
-from decross.contaminations_finder import ContaminationsFinder
-from decross.coverage_detector import DatabaseWorker
+from winston.settings import Settings
+from winston.path_resolver import PathResolver
+from winston.name_converter import NameConverter
+from winston.types_manager import TypesManager
+from winston.contaminations_finder import ContaminationsFinder
+from winston.coverage_detector import DatabaseWorker
 
 SETTINGS_PATH = 'config/settings.yml'
 
@@ -37,7 +37,7 @@ def main():
     NameConverter.load()
     TypesManager.load()
 
-    if Settings.decross.in_memory_db:
+    if Settings.winston.in_memory_db:
         logger.info('')
         logger.info("Loading in-memory database\n")
         DatabaseWorker.load_in_memory_db()
@@ -51,8 +51,8 @@ def main():
     avg_time = None
     start_time = time.time()
 
-    if Settings.decross.threads.multithreading:
-        threads_count = Settings.decross.threads.count
+    if Settings.winston.threads.multithreading:
+        threads_count = Settings.winston.threads.count
         logger.info("Starting with %s threads\n" % (threads_count))
         pool = Pool(threads_count)
 

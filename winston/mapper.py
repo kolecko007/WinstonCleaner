@@ -34,12 +34,12 @@ class Mapper:
 
     def _map(self):
         try:
-            bt_exe = Settings.decross.paths.tools.bowtie2
+            bt_exe = Settings.winston.paths.tools.bowtie2
         except AttributeError:
             bt_exe = 'bowtie2'
 
         try:
-            build_exe = Settings.decross.paths.tools.bowtie2_build
+            build_exe = Settings.winston.paths.tools.bowtie2_build
         except AttributeError:
             build_exe = 'bowtie2-build'
 
@@ -53,7 +53,7 @@ class Mapper:
         print command
         subprocess.call(command, shell=True)
 
-        threads_cnt = Settings.decross.tools.bowtie2.threads
+        threads_cnt = Settings.winston.tools.bowtie2.threads
         command = bt_exe + ' --very-sensitive -p %s -x %s -1 %s -2 %s -S %s'
         command = command % (threads_cnt, db_path, in_1, in_2, out_path)
         print command
@@ -61,7 +61,7 @@ class Mapper:
 
     def _pileup(self):
         try:
-            exe = Settings.decross.paths.tools.pileup_sh
+            exe = Settings.winston.paths.tools.pileup_sh
         except AttributeError:
             exe = 'pileup.sh'
 
