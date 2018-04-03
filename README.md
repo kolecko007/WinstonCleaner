@@ -1,4 +1,4 @@
-# Decross
+# WinstonCleaner
 WinstonCleaner is a software tool for detecting and removing cross-contaminated 
 contigs from assembled transcriptomes. The program uses BLAST to identify 
 suspicious contigs and RPKM values to sort these as either correct or 
