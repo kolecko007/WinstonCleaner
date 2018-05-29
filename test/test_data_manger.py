@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python2.7
 import unittest
 
 ROOT_PATH = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
