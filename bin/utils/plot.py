@@ -1,3 +1,4 @@
+#!/usr/bin/env python2.7
 import os, sys, glob
 from pathlib import Path
 from tqdm import tqdm
