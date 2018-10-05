@@ -5,6 +5,9 @@ from tqdm import tqdm
 from multiprocessing import Pool
 from optparse import OptionParser
 
+# TODO: bug in one_vs_one.py line 35, 36
+# TODO: fix saving images to the same folder bug
+
 ROOT_PATH = str(Path(os.path.dirname(os.path.realpath(__file__))).parent.parent)
 sys.path.append(ROOT_PATH)
 
