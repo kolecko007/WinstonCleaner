@@ -3,12 +3,9 @@
 import glob, os, re
 import ntpath
 import argparse
-
 import subprocess
+from tqdm import tqdm
 
-from Bio import SeqIO
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
 
 description = 'Get global statistics of contaminations for the Winston output'
 parser = argparse.ArgumentParser(description=description)
@@ -22,9 +19,13 @@ def get_contigs_count(path):
     result = 0
 
     if ntpath.exists(path):
-        result = int(subprocess.check_output(f"grep -c '>' {path}", shell=True))
+        try:
+            result = int(subprocess.check_output(f"grep -c '>' {path}", shell=True))
+        except subprocess.CalledProcessError as grepexc:
+            pass
 
     return result
+
 
 def parse_types(path):
     result = {}
@@ -33,6 +34,7 @@ def parse_types(path):
             splitted = line.strip().split(',')
             result[(splitted[0], splitted[1])] = splitted[-1]
     return result
+
 
 def main():
     types = parse_types(options.types_path)
@@ -43,9 +45,8 @@ def main():
     with open(options.output, 'w') as out_f:
         out_f.write("to_id,from_id,contam_cnt,contig_cnt,clean_cnt,deleted_cnt,type\n")
 
-        for path in paths:
+        for path in tqdm(paths):
             acc_id = acc_regexp.search(ntpath.basename(path))[0]
-            print(acc_id)
 
             clean_path = ntpath.join(options.results_path, f"{acc_id}_clean.fasta")
             deleted_path = ntpath.join(options.results_path, f"{acc_id}_deleted.fasta")
@@ -56,7 +57,9 @@ def main():
             with open(path) as f:
                 for line in f.readlines():
                     right_acc_id = line.strip().split(',')[0]
-                    out_f.write(f"{acc_id},{line.strip()},{clean_cnt + deleted_cnt},{clean_cnt},{deleted_cnt},{types[(acc_id, right_acc_id)]}\n")
+                    out_f.write(
+                        f"{acc_id},{line.strip()},{clean_cnt + deleted_cnt},{clean_cnt},{deleted_cnt},{types[(acc_id, right_acc_id)]}\n")
+
 
 if __name__ == '__main__':
     main()
