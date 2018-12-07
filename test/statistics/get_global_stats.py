@@ -19,7 +19,12 @@ options = parser.parse_args()
 
 
 def get_contigs_count(path):
-    return int(subprocess.check_output(f"grep -c '>' {path}", shell=True))
+    result = 0
+
+    if ntpath.exists(path):
+        result = int(subprocess.check_output(f"grep -c '>' {path}", shell=True))
+
+    return result
 
 def parse_types(path):
     result = {}
