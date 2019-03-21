@@ -24,7 +24,7 @@ parser.add_option("--type_detection_only", default=False,
                                            help="Type detection only")
 (options, args) = parser.parse_args()
 
-SETTINGS_PATH = 'config/settings.yml'
+SETTINGS_PATH = 'settings.yml'
 
 def analyze_blastab(file_path):
     logger.info("Analyzing %s" % file_path)
@@ -49,7 +49,7 @@ def main():
     global logger
     logger = logging.getLogger()
 
-    Settings.load(options.config_path or PathResolver.abs_path_for(SETTINGS_PATH))
+    Settings.load(options.config_path or SETTINGS_PATH)
     NameConverter.load()
 
     PathResolver.assure_path_exists(PathResolver.output_path())

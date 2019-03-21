@@ -50,13 +50,12 @@ class Mapper:
 
         command = build_exe + ' %s %s'
         command = command % (ref_path, db_path)
-        print command
         subprocess.call(command, shell=True)
 
         threads_cnt = Settings.winston.tools.bowtie2.threads
         command = bt_exe + ' --very-sensitive -p %s -x %s -1 %s -2 %s -S %s'
         command = command % (threads_cnt, db_path, in_1, in_2, out_path)
-        print command
+
         subprocess.call(command, shell=True)
 
     def _pileup(self):

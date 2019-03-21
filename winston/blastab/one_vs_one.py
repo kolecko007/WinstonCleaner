@@ -76,6 +76,11 @@ class OneVsOne(Blastab):
 
         plt.close()
 
+    def save_to_file(self, path):
+        with open(path, 'w') as f:
+            for hit in self.hits:
+                f.write(hit.raw)
+
     def left_org_external_name(self):
         return self.org_external_names()[0]
 

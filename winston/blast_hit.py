@@ -9,10 +9,8 @@ class BlastHit():
     DEFAULT_SUBJECT_RPKM = 10 ** -47
 
     def __init__(self, raw_hit):
+        self.raw = raw_hit
         splitted = raw_hit.strip().split()
-
-        if len(splitted) < 3:
-            print splitted
 
         self.qseqid = splitted[0]
         self.sseqid = splitted[1]

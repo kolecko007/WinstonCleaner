@@ -15,7 +15,7 @@ from winston.types_manager import TypesManager
 from winston.contaminations_finder import ContaminationsFinder
 from winston.coverage_detector import DatabaseWorker
 
-SETTINGS_PATH = 'config/settings.yml'
+SETTINGS_PATH = 'settings.yml'
 
 parser = OptionParser(description="Main contamination finder script")
 parser.add_option("--config_path", help="Alternative config path")
@@ -29,7 +29,7 @@ def main():
     global logger
     logger = logging.getLogger()
 
-    Settings.load(options.config_path or PathResolver.abs_path_for(SETTINGS_PATH))
+    Settings.load(options.config_path or SETTINGS_PATH)
 
     PathResolver.assure_path_exists(PathResolver.results_path_for())
     os.system('rm %s/*' % PathResolver.results_path_for())

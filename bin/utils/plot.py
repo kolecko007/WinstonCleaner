@@ -33,6 +33,8 @@ def has_left_right_options():
 def analyze_blastab(path, show=False):
     blastab = OneVsOne(path)
     output_path = '.'.join(path.split('.')[:-2])
+
+    blastab.save_to_file(output_path + '_filtered.blastab')
     blastab.plot(output_path + '.png', show=show)
 
 
