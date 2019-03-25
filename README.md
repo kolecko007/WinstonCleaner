@@ -16,7 +16,7 @@ To run WinstonCleaner, the following requirements must be satisfied:
 
 1. Make sure that you use Python 2.7
 
-1. `pip install WinstonCleaner`
+1. `pip install winston-cleaner`
 
 # Quick Start
 1. Prepare the folder with input data and an empty folder for the results
