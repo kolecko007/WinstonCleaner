@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
         long_description = fh.read()
 
 setuptools.setup(
-    name="winston",
+    name="winston_cleaner",
     version="0.1.0",
     author="Serafim Nenarokov, Martin Kolisko",
     author_email="serafim.nenarokov@gmail.com",
@@ -26,7 +26,7 @@ setuptools.setup(
     },
     py_modules=['winston'],
     include_package_data=True,
-    install_requires=["matplotlib>=2.0.0",
+    install_requires=["matplotlib==2.0.2",
                       "numpy>=1.14.0",
                       "scipy>=0.19.0",
                       "biopython>=1.68",
