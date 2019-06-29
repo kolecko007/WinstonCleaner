@@ -22,7 +22,7 @@ FOREIGN_ID=$4
 PERCENTAGE=$5
 
 DIRTY_FOLDER=$CONT_FOLDER/$OUR_ID
-mkdir $DIRTY_FOLDER
+mkdir -p $DIRTY_FOLDER
 
 DATASETS_FOLDER=$BASE_FOLDER/datasets
 mkdir -p $DATASETS_FOLDER
@@ -37,7 +37,7 @@ SEED=100
 
 echo 'Generating random reads...'
 count=$(awk '{s++}END{print s/4}' ${OUR_LEFT_READS})
-count=$(python -c "print int(round( ($count/(1.0-$PERCENTAGE/100.0)) * ($PERCENTAGE/100.0) ))")
+count=$(python -c "print(int(round( ($count/(1.0-$PERCENTAGE/100.0)) * ($PERCENTAGE/100.0) )))")
 echo "${count} reads to slice..."
 
 echo 'Making left samples'
