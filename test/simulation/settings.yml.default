@@ -16,6 +16,8 @@ decross:
   threads:
     multithreading:  false
     threads_count:   1
-
-  blast:
-    threads: 30
+  tools:
+    blast:
+      threads: 64
+    bowtie2:
+      threads: 64
